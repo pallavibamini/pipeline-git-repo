@@ -15,18 +15,11 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                echo 'Building application...'
+                echo 'Building and testing application...'
                 sh 'chmod +x build.sh'
                 sh './build.sh'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'java -cp src/main/java com.example.HelloDevOpsTest'
             }
         }
 
@@ -34,7 +27,6 @@ pipeline {
             steps {
                 echo 'Archiving artifacts...'
                 archiveArtifacts artifacts: 'app.jar', fingerprint: true
-                archiveArtifacts artifacts: 'build.sh', fingerprint: true
             }
         }
     }
@@ -43,6 +35,12 @@ pipeline {
         always {
             echo 'Pipeline completed'
             cleanWs()
+        }
+        success {
+            echo 'Pipeline SUCCESS '
+        }
+        failure {
+            echo 'Pipeline FAILED '
         }
     }
 }
